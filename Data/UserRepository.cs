@@ -9,7 +9,7 @@ namespace API.Data
 {
     public class UserRepository : IUserRepository
     {
-        private DataContext _context;
+        private readonly DataContext _context;
         private readonly IMapper _mapper;
      
         public UserRepository(DataContext context, IMapper mapper)
@@ -40,9 +40,9 @@ namespace API.Data
 
         public async Task<AppUser> GetUserByUsernameAsync(string username)
         {
-            return await _context.Users
-            .Include(p => p.Photos)
-            .SingleOrDefaultAsync(x => x.UserName == username);
+          return await _context.Users
+                .Include(p => p.Photos)
+                .SingleOrDefaultAsync(x => x.UserName == username);
         }
 
         public async Task<AppUser> GetUserByIdAsync(int id)
