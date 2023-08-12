@@ -36,32 +36,31 @@ export class PhotoEditorComponent implements OnInit {
     this.hasBaseDropzoneOver = e;
   }
 
-  setMainPhoto(photo: Photo){
+  setMainPhoto(photo: Photo) {
     this.memberService.setMainPhoto(photo.id).subscribe({
-      next: () =>{
-        if(this.user && this.member){
+      next: () => {
+        if (this.user && this.member) {
           this.user.photoUrl = photo.url;
           this.accountService.setCurrentUser(this.user);
           this.member.photoUrl = photo.url;
           this.member.photos.forEach(p => {
-            if(p.isMain) p.isMain = false;
-            if(p.id === photo.id) p.isMain = true;
+            if (p.isMain) p.isMain = false;
+            if (p.id === photo.id) p.isMain = true;
           })
         }
       }
     })
   }
 
-  DeletePhoto(photoId: number){
+  deletePhoto(photoId: number) {
     this.memberService.deletePhoto(photoId).subscribe({
       next: () => {
-        if(this.member){
-          this.member.photos = this.member.photos.filter(x => x.id != photoId);
+        if (this.member) {
+          this.member.photos = this.member?.photos.filter(x => x.id !== photoId)
         }
       }
     })
   }
-
 
   initializeUploader() {
     this.uploader = new FileUploader({
@@ -82,18 +81,13 @@ export class PhotoEditorComponent implements OnInit {
       if (response) {
         const photo = JSON.parse(response);
         this.member?.photos.push(photo);
-        if(photo.isMain && this.user && this.member) {
+        if (photo.isMain && this.user && this.member) {
           this.user.photoUrl = photo.url;
           this.member.photoUrl = photo.url;
           this.accountService.setCurrentUser(this.user);
         }
-        
       }
     }
-
-    
   }
-
-  
 }
 
