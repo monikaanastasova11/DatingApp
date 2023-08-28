@@ -1,8 +1,11 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgxGalleryAnimation, NgxGalleryImage, NgxGalleryOptions } from '@kolkov/ngx-gallery';
-import { TabDirective, TabsetComponent } from 'ngx-bootstrap/tabs';
+import { GalleryItem, GalleryModule, ImageItem } from 'ng-gallery';
+import { TabDirective, TabsModule, TabsetComponent } from 'ngx-bootstrap/tabs';
+import { TimeagoModule } from 'ngx-timeago';
 import { take } from 'rxjs';
+import { MemberMessagesComponent } from 'src/app/_members/member-messages/member-messages.component';
 import { Member } from 'src/app/_models/member';
 import { Message } from 'src/app/_models/message';
 import { User } from 'src/app/_models/user';
@@ -11,18 +14,19 @@ import { MessageService } from 'src/app/_services/message.service';
 import { PresenceService } from 'src/app/_services/presence.service';
 
 @Component({
+  standalone: true,
   selector: 'app-member-detail',
   templateUrl: './member-detail.component.html',
-  styleUrls: ['./member-detail.component.css']
+  styleUrls: ['./member-detail.component.css'],
+  imports: [GalleryModule, TabsModule, CommonModule, TimeagoModule, MemberMessagesComponent]
 })
 export class MemberDetailComponent implements OnInit, OnDestroy {
   @ViewChild('memberTabs', {static: true}) memberTabs?: TabsetComponent;
   member: Member = {} as Member;
-  galleryOptions: NgxGalleryOptions[] = [];
-  galleryImages: NgxGalleryImage[] = [];
   activeTab?: TabDirective;
   messages: Message[] = [];
   user?: User;
+  images: GalleryItem[] = [];
 
   constructor(private accountService: AccountService, private route: ActivatedRoute, 
       private messageService: MessageService, public presenceService: PresenceService) {
@@ -45,35 +49,20 @@ export class MemberDetailComponent implements OnInit, OnDestroy {
       }
     })
 
-    this.galleryOptions = [
-      {
-        width: '500px',
-        height: '500px',
-        imagePercent: 100,
-        thumbnailsColumns: 4,
-        imageAnimation: NgxGalleryAnimation.Slide,
-        preview: false
-      }
-    ]
+    this.getImages();
 
-    this.galleryImages = this.getImages();
   }
 
   ngOnDestroy(): void {
     this.messageService.stopHubConnection();
   }
 
-  getImages() {
-    if (!this.member) return [];
-    const imageUrls = [];
+     getImages() {
+    if (!this.member) return;
     for (const photo of this.member.photos) {
-      imageUrls.push({
-        small: photo.url,
-        medium: photo.url,
-        big: photo.url
-      })
+      this.images.push(new ImageItem({src: photo.url, thumb: photo.url}))
     }
-    return imageUrls;
+    
   }
 
   selectTab(heading: string) {
