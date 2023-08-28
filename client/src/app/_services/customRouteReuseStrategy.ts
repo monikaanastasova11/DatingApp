@@ -1,10 +1,10 @@
 import { ActivatedRouteSnapshot, DetachedRouteHandle, RouteReuseStrategy } from "@angular/router";
 
-export class CustomRouteReuseStragety implements RouteReuseStrategy{
-     shouldDetach(route: ActivatedRouteSnapshot): boolean {
-      return false;
+export class CustomRouteReuseStrategy implements RouteReuseStrategy {
+    shouldDetach(route: ActivatedRouteSnapshot): boolean {
+        return false;
     }
-     store(route: ActivatedRouteSnapshot, handle: DetachedRouteHandle | null): void {
+    store(route: ActivatedRouteSnapshot, handle: DetachedRouteHandle | null): void {
     }
     shouldAttach(route: ActivatedRouteSnapshot): boolean {
         return false;
@@ -13,7 +13,6 @@ export class CustomRouteReuseStragety implements RouteReuseStrategy{
         return null;
     }
     shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot): boolean {
-       return false;
+        return false;
     }
-
 }
